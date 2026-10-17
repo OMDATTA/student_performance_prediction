@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+.env
+.DS_Store
+# Keep this directory in the repository; add the exported model artifact only
+# if you have generated it from your own Colab notebook.
+models/*.tmp
