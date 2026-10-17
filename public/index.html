@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101b2b">
+  <meta name="description" content="GradeWise is an educational machine-learning demo for exploring student final-grade predictions based on prior grades and study habits.">
+  <title>GradeWise — Student Performance Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script defer src="/script.js"></script>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="GradeWise home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><rect x="2" y="2" width="36" height="36" rx="12" fill="currentColor" opacity=".13"/><path d="M10 25.5 16.5 19l5 4.5L30 14" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M25 14h5v5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="brand-copy"><strong>GradeWise</strong><small>STUDENT PERFORMANCE LAB</small></span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#predictor">Predictor</a>
+        <a href="#insights">Model insights</a>
+        <a href="#about">About</a>
+      </nav>
+      <div class="header-status"><span id="statusDot" class="status-dot"></span><span id="statusText">Connecting to model API</span></div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="eyebrow-dot"></span> MACHINE LEARNING · EDUCATION</div>
+          <h1>Turn learning signals<br><span>into clearer insight.</span></h1>
+          <p>Explore an estimated final grade using the same six academic inputs and regression models from your Student Performance Colab project.</p>
+          <div class="hero-pills"><span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg> Linear Regression</span><span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg> Random Forest</span><span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg> Grade scale 0–20</span></div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="visual-orbit orbit-one"></div><div class="visual-orbit orbit-two"></div>
+          <div class="visual-grid"></div>
+          <div class="grade-float"><span class="float-label">FINAL GRADE · G3</span><strong>14.8<span>/20</span></strong><div class="mini-progress"><i></i></div><small>Illustrative result</small></div>
+          <div class="chart-float"><span class="chart-float-label">LEARNING SIGNALS</span><div class="signal-bars"><i style="height:38%"></i><i style="height:58%"></i><i style="height:48%"></i><i style="height:74%"></i><i style="height:66%"></i><i style="height:88%"></i><i style="height:78%"></i></div><small>Grades · habits · attendance</small></div>
+          <div class="sparkle sparkle-a">✳</div><div class="sparkle sparkle-b">✦</div>
+        </div>
+      </section>
+
+      <section class="workspace section" id="predictor">
+        <div class="section-heading">
+          <div><div class="section-kicker">THE PREDICTOR</div><h2>Build a student profile</h2><p>Adjust the inputs to compare estimated outcomes. Fields mirror the notebook feature set.</p></div>
+          <button type="button" class="button button-quiet" id="exampleButton">Load example <span aria-hidden="true">↗</span></button>
+        </div>
+        <div class="workspace-grid">
+          <section class="panel input-panel" aria-labelledby="inputsTitle">
+            <div class="panel-heading"><div class="panel-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 14.4 8.6 20.5 9.1 15.9 13.2 17.3 19.2 12 16 6.7 19.2 8.1 13.2 3.5 9.1 9.6 8.6Z"/></svg></div><div><h3 id="inputsTitle">Academic inputs</h3><p>Enter values from current records</p></div></div>
+            <form id="predictionForm">
+              <div class="form-grid">
+                <label class="field"><span>Age <em>years</em></span><input type="number" id="age" name="age" min="15" max="22" step="1" value="17" required><small>Dataset range: 15–22 years</small></label>
+                <label class="field"><span>Weekly study time <em>category</em></span><select id="studytime" name="studytime" required><option value="1">1 · Less than 2 hours</option><option value="2">2 · 2–5 hours</option><option value="3" selected>3 · 5–10 hours</option><option value="4">4 · More than 10 hours</option></select><small>Ordinal scale used by the dataset</small></label>
+                <label class="field"><span>Past class failures <em>count / scale</em></span><input type="number" id="failures" name="failures" min="0" max="4" step="1" value="0" required><small>Use the dataset's encoded value</small></label>
+                <label class="field"><span>School absences <em>days</em></span><input type="number" id="absences" name="absences" min="0" max="93" step="1" value="5" required><small>Enter the total recorded absences</small></label>
+                <label class="field"><span>First-period grade <em>G1 / 20</em></span><div class="range-control"><input type="range" id="G1range" min="0" max="20" step="1" value="11" aria-label="Adjust first-period grade"><input type="number" id="G1" name="G1" min="0" max="20" step="0.5" value="11" required></div><small>Score from 0 to 20</small></label>
+                <label class="field"><span>Second-period grade <em>G2 / 20</em></span><div class="range-control"><input type="range" id="G2range" min="0" max="20" step="1" value="11" aria-label="Adjust second-period grade"><input type="number" id="G2" name="G2" min="0" max="20" step="0.5" value="11" required></div><small>Score from 0 to 20</small></label>
+              </div>
+              <div class="model-choice-wrap"><label class="field"><span>Prediction model</span><select id="model" name="model"><option value="best" selected>Best on holdout MAE (automatic)</option><option value="random_forest">Random Forest Regression</option><option value="linear_regression">Linear Regression</option></select><small>“Best” is chosen using MAE on the notebook's fixed test split.</small></label></div>
+              <div class="form-footer"><div class="privacy-note"><span class="lock-icon">♢</span><span>Inputs are processed for this request only.<br>No student profile is saved by this demo.</span></div><button class="button button-primary" type="submit" id="predictButton"><span>Predict final grade</span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M10 4l6 6-6 6"/></svg></button></div>
+              <div class="form-message" id="formMessage" role="status" aria-live="polite"></div>
+            </form>
+          </section>
+
+          <section class="panel result-panel" aria-labelledby="resultTitle">
+            <div class="panel-heading result-heading"><div class="panel-icon result-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V6M4 18h16M8 15V9M12 15V5M16 15v-3M20 15V7"/></svg></div><div><h3 id="resultTitle">Prediction summary</h3><p>Your model output will appear here</p></div><span class="result-chip" id="resultStatus">AWAITING INPUT</span></div>
+            <div id="resultPlaceholder" class="result-placeholder"><div class="placeholder-art"><div class="placeholder-ring ring-outer"></div><div class="placeholder-ring ring-inner"></div><div class="placeholder-cap">G3</div><div class="placeholder-dot dot-one"></div><div class="placeholder-dot dot-two"></div><div class="placeholder-dot dot-three"></div></div><h4>Your next insight starts here.</h4><p>Complete the academic profile and run a prediction to see estimated grade, model comparison, and context-aware learning prompts.</p><div class="placeholder-tags"><span>01 · Predict</span><span>02 · Compare</span><span>03 · Reflect</span></div></div>
+            <div id="resultContent" class="result-content" hidden>
+              <div class="grade-result"><div><span class="result-overline">ESTIMATED FINAL GRADE</span><div class="grade-number"><strong id="predictedGrade">—</strong><span>/20</span></div></div><span id="categoryBadge" class="category-badge">—</span></div>
+              <div class="grade-track"><div id="gradeTrackFill" class="grade-track-fill"></div></div><div class="grade-track-labels"><span>0 · Lower</span><span>10 · Midpoint</span><span>20 · Maximum</span></div>
+              <div class="selected-model-line"><span class="small-dot"></span><span id="selectedModelLabel">Selected model</span><span id="selectedModelMetric" class="metric-pill">MAE —</span></div>
+              <div class="compare-title"><span>Model comparison</span><span>Same student inputs</span></div>
+              <div class="comparison-rows" id="comparisonRows"></div>
+              <div class="support-note" id="supportNote"></div>
+              <button type="button" class="button button-secondary button-wide" id="downloadResultButton">Download prediction as JSON <span aria-hidden="true">↓</span></button>
+            </div>
+            <div class="result-disclaimer"><span>ⓘ</span><p>Educational demonstration only. Estimates are uncertain and must not be used to label, penalize, admit, or exclude any student.</p></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section insights-section" id="insights">
+        <div class="section-heading">
+          <div><div class="section-kicker">MODEL TRANSPARENCY</div><h2>Know what the model sees</h2><p>Evaluation scores describe performance on a held-out subset of the historical dataset—not a guarantee for any individual.</p></div>
+          <button type="button" class="button button-secondary" id="loadMetricsButton">Load model metrics <span aria-hidden="true">↗</span></button>
+        </div>
+        <div class="metrics-grid">
+          <article class="metric-card"><span class="metric-label">BEST MODEL BY MAE</span><strong id="bestModelMetricValue">—</strong><small id="bestModelMetricNote">Load metrics to inspect evaluation</small></article>
+          <article class="metric-card"><span class="metric-label">LINEAR REGRESSION · MAE</span><strong id="linearMae">—</strong><small>Mean absolute error · grade points</small></article>
+          <article class="metric-card"><span class="metric-label">RANDOM FOREST · MAE</span><strong id="rfMae">—</strong><small>Mean absolute error · grade points</small></article>
+          <article class="metric-card"><span class="metric-label">HOLDOUT R²</span><strong id="bestR2">—</strong><small id="sampleCount">Dataset details appear here</small></article>
+        </div>
+        <div class="insights-grid">
+          <article class="panel feature-panel"><div class="panel-heading"><div><h3>Random Forest feature importance</h3><p>Relative model reliance, not causation</p></div><span class="tiny-label">MODEL SIGNALS</span></div><div id="featureChart" class="feature-chart empty-chart"><p>Load metrics to view feature importance.</p></div><div class="chart-footnote">Importance describes how the fitted Random Forest used input features. It does not prove that changing a feature will cause a grade to change.</div></article>
+          <article class="panel metric-explainer"><div class="panel-heading"><div><h3>How to read the scores</h3><p>Three useful evaluation measures</p></div></div><div class="definition-list"><div><span class="definition-symbol">MAE</span><div><strong>Mean Absolute Error</strong><p>Average absolute difference between predicted and actual grades. Lower is better.</p></div></div><div><span class="definition-symbol">RMSE</span><div><strong>Root Mean Squared Error</strong><p>Penalizes larger prediction errors more heavily. Lower is better.</p></div></div><div><span class="definition-symbol">R²</span><div><strong>Coefficient of Determination</strong><p>Shows how well predictions explain target variation on the test split. Near 1 is stronger; it can be negative.</p></div></div></div></article>
+        </div>
+      </section>
+
+      <section class="bulk-section section" id="bulk">
+        <div class="bulk-copy"><div class="section-kicker">BATCH WORKFLOW</div><h2>Predict for a whole class.</h2><p>Upload a CSV with columns <code>age, studytime, failures, absences, G1, G2</code>. The first 100 rows can be scored in one request and exported as CSV.</p><div class="bulk-footnote">Use anonymized sample data. Do not upload names, IDs, contact details, or other identifying information.</div></div>
+        <div class="panel bulk-panel"><label class="dropzone" for="csvFile"><span class="upload-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m-5 5 5-5 5 5M4 16v4h16v-4"/></svg></span><strong>Choose a student CSV</strong><span>CSV with the six required input columns · max 100 rows</span><input type="file" id="csvFile" accept=".csv,text/csv"></label><div class="bulk-actions"><button class="button button-secondary" id="downloadTemplateButton" type="button">Download CSV template</button><button class="button button-primary" id="batchPredictButton" type="button" disabled>Run batch prediction <span aria-hidden="true">↗</span></button></div><div class="form-message" id="batchMessage" role="status" aria-live="polite"></div><div id="batchResultsWrap" class="batch-results" hidden><div class="batch-summary" id="batchSummary"></div><div class="table-scroll"><table><thead><tr><th>Row</th><th>G1</th><th>G2</th><th>Predicted G3</th><th>Category</th><th>Model</th></tr></thead><tbody id="batchResultsBody"></tbody></table></div><button class="button button-secondary button-wide" id="downloadBatchButton" type="button">Download results CSV ↓</button></div></div>
+      </section>
+
+      <section class="about-section section" id="about">
+        <div><div class="section-kicker">ABOUT THE PROJECT</div><h2>A practical ML workflow,<br>from Colab to the web.</h2></div>
+        <div class="about-text"><p>This website follows the provided Colab notebook: it uses the UCI Student Performance mathematics dataset, selects <strong>age, studytime, failures, absences, G1 and G2</strong>, trains Linear Regression and Random Forest Regression, and evaluates them using MAE, RMSE and R².</p><p>The underlying dataset describes students at two Portuguese schools. G1 and G2 are prior-period grades, and G3 is the final-grade target. Results may not generalize to different schools, curricula or student populations.</p><a class="source-link" href="https://archive.ics.uci.edu/dataset/320/student%2Bperformance" target="_blank" rel="noopener noreferrer">Read the UCI dataset description <span aria-hidden="true">↗</span></a></div>
+      </section>
+    </main>
+
+    <footer class="footer"><a class="footer-brand" href="/">GradeWise</a><span>Built with Python · FastAPI · scikit-learn</span><span>For learning and research, not high-stakes decisions.</span></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
